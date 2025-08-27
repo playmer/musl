@@ -31,7 +31,11 @@ struct _IO_FILE {
 	unsigned char *buf;
 	size_t buf_size;
 	FILE *prev, *next;
+#ifndef WIN32
 	int fd;
+#else
+	HANDLE fd;
+#endif
 	int pipe_pid;
 	long lockcount;
 	int mode;

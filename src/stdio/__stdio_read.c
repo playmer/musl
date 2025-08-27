@@ -8,9 +8,15 @@ size_t __stdio_read(FILE *f, unsigned char *buf, size_t len)
 		{ .iov_base = f->buf, .iov_len = f->buf_size }
 	};
 	ssize_t cnt;
-
+#ifndef WIN32
 	cnt = iov[0].iov_len ? syscall(SYS_readv, f->fd, iov, 2)
 		: syscall(SYS_read, f->fd, iov[1].iov_base, iov[1].iov_len);
+#else
+	LPDWORD win_cnt;
+	ReadFile(f->fd, buf, len - !!f->buf_size, &cnt, NULL);
+	ReadFile(f->fd, f->buf, f->buf_size, &cnt, NULL);
+	cnt = (ssize_t)win_cnt;
+#endif
 	if (cnt <= 0) {
 		f->flags |= cnt ? F_ERR : F_EOF;
 		return 0;

@@ -6,10 +6,13 @@ FILE *__fopen_rb_ca(const char *filename, FILE *f, unsigned char *buf, size_t le
 {
 	memset(f, 0, sizeof *f);
 
+#ifndef WIN32
 	f->fd = sys_open(filename, O_RDONLY|O_CLOEXEC);
 	if (f->fd < 0) return 0;
 	__syscall(SYS_fcntl, f->fd, F_SETFD, FD_CLOEXEC);
-
+#else
+	CreateFileA(filename, )
+#endif
 	f->flags = F_NOWR | F_PERM;
 	f->buf = buf + UNGET;
 	f->buf_size = len - UNGET;

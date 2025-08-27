@@ -1,6 +1,9 @@
 #ifndef _INTERNAL_SYSCALL_H
 #define _INTERNAL_SYSCALL_H
 
+
+#ifndef WIN32
+
 #include <features.h>
 #include <errno.h>
 #include <sys/syscall.h>
@@ -417,5 +420,11 @@ hidden long __emulate_wait4(int, int *, int, void *, int);
 hidden void __procfdname(char __buf[static 15+3*sizeof(int)], unsigned);
 
 hidden void *__vdsosym(const char *, const char *);
+
+#else 
+
+#include <win32/windows.h>
+
+#endif
 
 #endif
