@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
-project(libc LANGUAGES C CXX)
+project(musl_libc LANGUAGES C CXX)
 
-add_library(libc)
+add_library(musl_libc)
 
 
 
@@ -11,11 +11,11 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/bits/alltypes.h
     DEPENDS ${CMAKE_CURRENT_LIST_DIR}/tools/sed.exe ${CMAKE_CURRENT_LIST_DIR}/tools/mkalltypes.sed ${CMAKE_CURRENT_LIST_DIR}/arch/i386/bits/alltypes.h.in ${CMAKE_CURRENT_LIST_DIR}/include/alltypes.h.in)
 
 
-add_custom_target(libc_generated_files DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/bits/alltypes.h)
+add_custom_target(musl_libc_generated_files DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/bits/alltypes.h)
 
-add_dependencies(libc libc_generated_files)
+add_dependencies(musl_libc musl_libc_generated_files)
 
-target_include_directories(libc
+target_include_directories(musl_libc
 PUBLIC
     ${CMAKE_CURRENT_BINARY_DIR}
     arch/i386
@@ -58,7 +58,7 @@ file(GLOB STDLIB_SOURCES CONFIGURE_DEPENDS src/stdlib/*.c)
 file(GLOB STDIO_SOURCES CONFIGURE_DEPENDS src/stdio/*.c)
 file(GLOB STRING_SOURCES CONFIGURE_DEPENDS src/string/*.c)
 
-target_sources(libc
+target_sources(musl_libc
 PRIVATE
     src/startup/win32/start.cpp
     ${COMPLEX_SOURCES}
@@ -75,10 +75,4 @@ PRIVATE
     ${THREAD_SOURCES}
 )
 
-target_compile_options(libc PRIVATE /W0)
-
-add_executable(startup_main tests/startup_main.c)
-target_link_libraries(startup_main PUBLIC libc)
-
-add_executable(startup_main_cpp tests/startup_main.cpp)
-target_link_libraries(startup_main_cpp PUBLIC libc)
+target_compile_options(musl_libc PRIVATE /W0)
