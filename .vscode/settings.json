@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "threads.h": "c",
+        "pthread_impl.h": "c",
+        "complex": "c"
+    }
+}

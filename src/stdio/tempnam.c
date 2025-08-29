@@ -36,12 +36,16 @@ char *tempnam(const char *dir, const char *pfx)
 
 	for (try=0; try<MAXTRIES; try++) {
 		__randname(s+l-6);
+#ifndef WIN32
 #ifdef SYS_readlink
 		r = __syscall(SYS_readlink, s, (char[1]){0}, 1);
 #else
 		r = __syscall(SYS_readlinkat, AT_FDCWD, s, (char[1]){0}, 1);
 #endif
 		if (r == -ENOENT) return strdup(s);
+#else
+		if (PathFileExistsA(s)) return strdup(s);
+#endif
 	}
 	return 0;
 }

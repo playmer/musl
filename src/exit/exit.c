@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include "libc.h"
-#include "pthread_impl.h"
+#include "threads.h"
 #include "atomic.h"
 #include "syscall.h"
 
@@ -35,7 +35,7 @@ _Noreturn void exit(int code)
 	 * machinery and lets us trap recursive calls while supporting
 	 * multiple threads contending to be the one to exit(). */
 	static volatile int exit_lock[1];
-	int tid =  __pthread_self()->tid;
+	int tid =  thrd_current()->tid;
 	int prev = a_cas(exit_lock, 0, tid);
 	if (prev == tid) a_crash();
 	else if (prev) for (;;) __sys_pause();

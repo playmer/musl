@@ -1,5 +1,10 @@
 #include "stdio_impl.h"
+
+#ifndef WIN32
 #include "pthread_impl.h"
+#else
+#include "win32_thread_impl.h"
+#endif
 
 int __lockfile(FILE *f)
 {

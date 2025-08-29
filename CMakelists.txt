@@ -4,14 +4,6 @@ project(libc LANGUAGES C CXX)
 add_library(libc)
 
 
-file(GLOB COMPLEX_SOURCES CONFIGURE_DEPENDS src/complex/*.c)
-file(GLOB CTYPE_SOURCES CONFIGURE_DEPENDS src/ctype/*.c)
-file(GLOB MATH_SOURCES CONFIGURE_DEPENDS src/math/*.c)
-file(GLOB PRNG_SOURCES CONFIGURE_DEPENDS src/prng/*.c)
-file(GLOB REGEX_SOURCES CONFIGURE_DEPENDS src/regex/*.c)
-file(GLOB STDLIB_SOURCES CONFIGURE_DEPENDS src/stdlib/*.c)
-file(GLOB STDIO_SOURCES CONFIGURE_DEPENDS src/stdio/*.c)
-file(GLOB STRING_SOURCES CONFIGURE_DEPENDS src/string/*.c)
 
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/bits/alltypes.h
     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/bits
@@ -35,20 +27,58 @@ PUBLIC
     include
 )
 
+
+set(EXIT_SOURCES
+    src/exit/abort.c
+    #src/exit/abort_lock.c
+    #src/exit/assert.c
+    #src/exit/atexit.c
+    src/exit/at_quick_exit.c
+    #src/exit/exit.c
+    src/exit/quick_exit.c
+    src/exit/_Exit.c
+)
+
+
+set(THREAD_SOURCES
+    src/thread/thrd_create.c
+    src/thread/thrd_exit.c
+    src/thread/win32_thread_impl.c
+)
+
+file(GLOB COMPLEX_SOURCES CONFIGURE_DEPENDS src/complex/*.c)
+file(GLOB CTYPE_SOURCES CONFIGURE_DEPENDS src/ctype/*.c)
+#file(GLOB EXIT_SOURCES CONFIGURE_DEPENDS src/exit/*.c)
+file(GLOB MATH_SOURCES CONFIGURE_DEPENDS src/math/*.c)
+file(GLOB MULTIBYTE_SOURCES CONFIGURE_DEPENDS src/multibyte/*.c)
+file(GLOB PRNG_SOURCES CONFIGURE_DEPENDS src/prng/*.c)
+file(GLOB REGEX_SOURCES CONFIGURE_DEPENDS src/regex/*.c)
+file(GLOB SEARCH_SOURCES CONFIGURE_DEPENDS src/search/*.c)
+file(GLOB STDLIB_SOURCES CONFIGURE_DEPENDS src/stdlib/*.c)
+file(GLOB STDIO_SOURCES CONFIGURE_DEPENDS src/stdio/*.c)
+file(GLOB STRING_SOURCES CONFIGURE_DEPENDS src/string/*.c)
+
 target_sources(libc
 PRIVATE
     src/startup/win32/start.cpp
     ${COMPLEX_SOURCES}
     ${CTYPE_SOURCES}
+    ${EXIT_SOURCES}
     ${MATH_SOURCES}
+    ${MULTIBYTE_SOURCES}
     ${PRNG_SOURCES}
     ${REGEX_SOURCES}
+    ${SEARCH_SOURCES}
     ${STDLIB_SOURCES}
     ${STDIO_SOURCES}
     ${STRING_SOURCES}
+    ${THREAD_SOURCES}
 )
 
 target_compile_options(libc PRIVATE /W0)
 
 add_executable(startup_main tests/startup_main.c)
 target_link_libraries(startup_main PUBLIC libc)
+
+add_executable(startup_main_cpp tests/startup_main.cpp)
+target_link_libraries(startup_main_cpp PUBLIC libc)

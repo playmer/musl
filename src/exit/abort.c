@@ -1,13 +1,18 @@
 #include <stdlib.h>
 #include <signal.h>
 #include "syscall.h"
+
+#ifndef WIN32
 #include "pthread_impl.h"
+#endif
+
 #include "atomic.h"
 #include "lock.h"
 #include "ksigaction.h"
 
 _Noreturn void abort(void)
 {
+	#ifndef WIN32
 	raise(SIGABRT);
 
 	/* If there was a SIGABRT handler installed and it returned, or if
@@ -26,5 +31,10 @@ _Noreturn void abort(void)
 	/* Beyond this point should be unreachable. */
 	a_crash();
 	raise(SIGKILL);
+	#else
+	/* Beyond this point should be unreachable. */
+	__debugbreak();
+	TerminateProcess(GetCurrentProcess(), 127);
+	#endif
 	_Exit(127);
 }

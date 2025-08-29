@@ -7,9 +7,12 @@
 #ifdef __cplusplus
 extern "C" {
 typedef unsigned long thrd_t;
-#else
+#elif !defined(WIN32)
 typedef struct __pthread *thrd_t;
 #define thread_local _Thread_local
+#else
+struct __thrd_t;
+typedef struct __thrd_t *thrd_t;
 #endif
 
 typedef int once_flag;

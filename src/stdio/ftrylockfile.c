@@ -1,5 +1,9 @@
 #include "stdio_impl.h"
+#ifndef WIN32
 #include "pthread_impl.h"
+#else
+#include "win32_thread_impl.h"
+#endif
 #include <limits.h>
 
 void __do_orphaned_stdio_locks()

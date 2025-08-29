@@ -5,6 +5,7 @@
 
 int remove(const char *path)
 {
+#ifndef WIN32
 #ifdef SYS_unlink
 	int r = __syscall(SYS_unlink, path);
 #else
@@ -16,4 +17,8 @@ int remove(const char *path)
 	if (r==-EISDIR) r = __syscall(SYS_unlinkat, AT_FDCWD, path, AT_REMOVEDIR);
 #endif
 	return __syscall_ret(r);
+
+#else
+	return !DeleteFileA(path);
+#endif
 }
